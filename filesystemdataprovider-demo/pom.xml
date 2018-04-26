@@ -19,6 +19,7 @@
 		<vaadin.version>8.3.3</vaadin.version>
 		<vaadin.plugin.version>8.3.3</vaadin.plugin.version>
 		<jetty.plugin.version>9.3.9.v20160517</jetty.plugin.version>
+		<vaadin.widgetset.mode>CDN</vaadin.widgetset.mode>
 	</properties>
 
     <!--

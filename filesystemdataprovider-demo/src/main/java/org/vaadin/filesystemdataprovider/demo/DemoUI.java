@@ -1,6 +1,7 @@
 package org.vaadin.filesystemdataprovider.demo;
 
 import java.io.File;
+import java.util.Date;
 
 import javax.servlet.annotation.WebServlet;
 
@@ -13,7 +14,9 @@ import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.UI;
 
@@ -31,9 +34,14 @@ public class DemoUI extends UI
     @Override
     protected void init(VaadinRequest request) {
 
-    	File rootFile = new File("C:/Users/Tatu/Documents");
-    	FilesystemData root = new FilesystemData(rootFile);
-    	FilesystemDataProvider fileSystem = new FilesystemDataProvider(root); 
+    	TabSheet tabSheet = new TabSheet();
+
+    	// Demo 1: Use FilesystemData non-recursively
+    	
+    	// When using non-recursive mode, it is possible to browse entire file system    	
+    	File rootFile = new File("C:/");
+    	FilesystemData root = new FilesystemData(rootFile, false);
+    	FilesystemDataProvider fileSystem = new FilesystemDataProvider(root);     	
         final Tree<File> tree = new Tree<>();
         tree.setDataProvider(fileSystem);
 
@@ -41,9 +49,50 @@ public class DemoUI extends UI
         	return FileTypeResolver.getIcon(file);
         });
         
-        final Panel layout = new Panel();
-        layout.setSizeFull();
-        layout.setContent(tree);
-        setContent(layout);
+        tree.addItemClickListener(event -> {
+        	File file = event.getItem();        	
+        	if (file.isDirectory()) {
+        		// Add new items when folders are being clicked first time
+        		if (root.getChildren(file).isEmpty()) root.addItems(file, root.getChildrenFromFilesystem(file));
+        		tree.expand(file);
+        	} else {
+        		Date date = new Date(file.lastModified());
+        		Notification.show(file.getPath()+" "+date+" "+file.length());        		        		
+        	}
+        });
+                
+        final Panel layout1 = new Panel();
+        layout1.setSizeFull();        
+        layout1.setContent(tree);
+    	tabSheet.addTab(layout1,"Non-recursive demo");
+
+    	// Demo 2: Use FilesystemData recursively
+    	
+    	// Use path that points somewhere that makes sense
+    	// Large directories are slow to construct and consume memory
+    	File rootFile2 = new File("C:/Users/TatuL/Documents");
+    	FilesystemData root2 = new FilesystemData(rootFile2);
+    	FilesystemDataProvider fileSystem2 = new FilesystemDataProvider(root2);     	
+        final Tree<File> tree2 = new Tree<>();
+        tree2.setDataProvider(fileSystem2);
+
+        tree2.setItemIconGenerator(file -> {
+        	return FileTypeResolver.getIcon(file);
+        });
+        
+        tree2.addItemClickListener(event -> {
+        	File file = event.getItem();
+        	if (!file.isDirectory()) {
+        		Date date = new Date(file.lastModified());
+        		Notification.show(file.getPath()+" "+date+" "+file.length());        		
+        	}
+        });
+        
+        final Panel layout2 = new Panel();
+        layout2.setSizeFull();        
+        layout2.setContent(tree2);
+    	tabSheet.addTab(layout2,"Recursive demo");
+    	    	
+        setContent(tabSheet);
     }
 }
