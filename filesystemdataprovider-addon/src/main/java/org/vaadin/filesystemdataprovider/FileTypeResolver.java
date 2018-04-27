@@ -2,6 +2,7 @@ package org.vaadin.filesystemdataprovider;
 
 import java.io.File;
 import java.io.Serializable;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
@@ -15,12 +16,10 @@ import com.vaadin.server.ThemeResource;
 /**
  * Utility class that can figure out mime-types and icons related to files.
  * <p>
- * Note : The icons are associated purely to mime-types, so a file may not have
- * a custom icon accessible with this class.
+ * Note : The icons are associated purely to mime-types, with fuzzy matching
+ * with limited icon set
  * </p>
  *
- * @author Vaadin Ltd.
- * @since 3.0
  */
 @SuppressWarnings("serial")
 public class FileTypeResolver implements Serializable {
@@ -43,15 +42,15 @@ public class FileTypeResolver implements Serializable {
             + "application/futuresplash                        spl,"
             + "application/mac-binhex40                        hqx,"
             + "application/msaccess                            mdb,"
-            + "application/msword                              doc dot,"
+            + "application/msword                              doc dot docx,"
             + "application/octet-stream                        bin,"
             + "application/oda                                 oda,"
             + "application/pdf                                 pdf,"
             + "application/pgp-signature                       pgp,"
             + "application/postscript                          ps ai eps,"
             + "application/rtf                                 rtf,"
-            + "application/vnd.ms-excel                        xls xlb,"
-            + "application/vnd.ms-powerpoint                   ppt pps pot,"
+            + "application/vnd.ms-excel                        xls xlb xlsx,"
+            + "application/vnd.ms-powerpoint                   ppt pps pot pptx,"
             + "application/vnd.wap.wmlc                        wmlc,"
             + "application/vnd.wap.wmlscriptc                  wmlsc,"
             + "application/wordperfect5.1                      wp5,"
@@ -289,8 +288,9 @@ public class FileTypeResolver implements Serializable {
     	if (mimeType.startsWith("image")) return VaadinIcons.FILE_PICTURE;
     	if (mimeType.startsWith("text")) return VaadinIcons.FILE_TEXT_O;
     	if (mimeType.startsWith("video")) return VaadinIcons.FILE_MOVIE;
-        if (mimeType.startsWith("inode/drive")) return VaadinIcons.FOLDER;
+        if (mimeType.startsWith("inode/drive")) return VaadinIcons.HARDDRIVE_O;
         if (mimeType.startsWith("inode/directory")) return VaadinIcons.FOLDER;
+        if (mimeType.startsWith("inode/symlink")) return VaadinIcons.FOLDER_O;
     	
         // If nothing is known about the file-type, general file
         // icon is used
@@ -305,7 +305,7 @@ public class FileTypeResolver implements Serializable {
      *
      * @param file
      *            the file whose icon is requested.
-     * @return the icon corresponding to the given file
+     * @return the VaadinIcons font icon corresponding to the given file
      */
     public static Resource getIcon(File file) {
         return getIconByMimeType(getMIMEType(file));
@@ -330,7 +330,8 @@ public class FileTypeResolver implements Serializable {
         if (file.isDirectory()) {
             // Drives
             if (file.getParentFile() == null) {
-                return "inode/drive";
+            	if (Files.isSymbolicLink(file.toPath())) return "inode/symlink";
+            	else return "inode/drive";
             } else {
                 return "inode/directory";
             }

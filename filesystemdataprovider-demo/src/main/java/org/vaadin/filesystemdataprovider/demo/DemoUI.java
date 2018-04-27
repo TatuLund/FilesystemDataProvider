@@ -50,14 +50,18 @@ public class DemoUI extends UI
         });
         
         tree.addItemClickListener(event -> {
-        	File file = event.getItem();        	
-        	if (file.isDirectory()) {
-        		// Add new items when folders are being clicked first time
-        		if (root.getChildren(file).isEmpty()) root.addItems(file, root.getChildrenFromFilesystem(file));
-        		tree.expand(file);
+        	File file = event.getItem();     
+        	if (tree.isExpanded(file)) {
+        		tree.collapse(file);
         	} else {
-        		Date date = new Date(file.lastModified());
-        		Notification.show(file.getPath()+" "+date+" "+file.length());        		        		
+        		if (file.isDirectory()) {
+        			// Add new items when folders are being clicked first time
+        			if (root.getChildren(file).isEmpty()) root.addItems(file, root.getChildrenFromFilesystem(file));
+        			tree.expand(file);
+        		} else {
+        			Date date = new Date(file.lastModified());
+        			Notification.show(file.getPath()+" "+date+" "+file.length());        		        		
+        		}
         	}
         });
                 

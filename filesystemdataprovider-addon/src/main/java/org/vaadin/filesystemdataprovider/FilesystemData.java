@@ -11,17 +11,38 @@ import java.util.List;
 
 import com.vaadin.data.TreeData;
 
+/**
+ * This is the data model class for FilesystemDataProvider, which is just a TreeDataProvider
+ * using FilesystemData 
+ * 
+ * @author TatuL
+ *
+ */
 public class FilesystemData extends TreeData<File> {
 
     private FilenameFilter filter = null;
 	private boolean recursive;
 	
+	/**
+	 * Consruct new FilesystemData based on root folder recursively
+	 * Note: Symlinks are not followed
+	 * 
+	 * @param root Root folder
+	 */
 	public FilesystemData(File root) {
 		super();
         this.addRootItems(root);
         constructFileSystem(root);
 	}
 
+	/**
+	 * Construct new FilesystemData with given folder either
+	 * recursive or non-recursive
+	 * Note: Symlinks are not followed in recursive mode
+	 * 	 
+	 * @param root Root folder
+	 * @param recursive Set to false to disable recursive search
+	 */
 	public FilesystemData(File root, boolean recursive) {
 		super();
         this.addRootItems(root);
@@ -35,6 +56,16 @@ public class FilesystemData extends TreeData<File> {
         }        
 	}
 	
+	/**
+	 * Construct new FilesystemData with given folder either
+	 * recursive or non-recursive
+	 * Note: Symlinks are not followed in recursive mode
+	 * Give file extension filter, only files with extension are included
+	 * 
+	 * @param root Root folder
+	 * @param recursive Set to false to disable recursive search
+	 * @param filter The file extension as string
+	 */
 	public FilesystemData(File root, String filter, boolean recursive) {
 		super();
         this.addRootItems(root);
@@ -49,6 +80,7 @@ public class FilesystemData extends TreeData<File> {
         }        
 	}
 	
+	// Recursive filesystem crawler function
 	private void constructFileSystem(File root) {
         if (root.isDirectory()) {
         	List<File> files = getChildrenFromFilesystem(root);
@@ -59,6 +91,13 @@ public class FilesystemData extends TreeData<File> {
         }        		
 	}
 	
+	/**
+	 * Get file listing of given folder, this function can be used
+	 * as data provider when adding new children to tree, hence public
+	 * 
+	 * @param item The folder 
+	 * @return List of files in the folder
+	 */
     public List<File> getChildrenFromFilesystem(File item) {
         if (!item.isDirectory()) {
         	return new LinkedList<File>();
@@ -108,18 +147,35 @@ public class FilesystemData extends TreeData<File> {
         }
 
     }
-    public void setRecursive(boolean recursive) {
+
+    // Used internally, does not have impact post construct, hence private
+    private void setRecursive(boolean recursive) {
         this.recursive = recursive;
     }
-
+    
+	/**
+	 * Return current recursive / non-recursive state	
+	 * 
+	 * @return True if FilesystemData is recursive
+	 */
     public boolean isRecursive() {
         return recursive;
     }
   
+    /**
+     * Set new file name filter
+     * 
+     * @param filter The filter
+     */
     public void setFilter(FilenameFilter filter) {
         this.filter = filter;
     }
 
+    /**
+     * Set new file name filter
+     * 
+     * @param extension Filter as string
+     */
     public void setFilter(String extension) {
         filter = new FileExtensionFilter(extension);
     }
