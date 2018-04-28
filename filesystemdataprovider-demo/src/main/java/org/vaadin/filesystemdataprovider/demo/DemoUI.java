@@ -38,7 +38,9 @@ public class DemoUI extends UI
 
     	// Demo 1: Use FilesystemData non-recursively
     	
-    	// When using non-recursive mode, it is possible to browse entire file system    	
+    	// When using non-recursive mode, it is possible to browse entire file system
+    	// DataProvider pre-fetches root directory and rest is loaded progressively
+    	// lazily
     	File rootFile = new File("C:/");
     	FilesystemData root = new FilesystemData(rootFile, false);
     	FilesystemDataProvider fileSystem = new FilesystemDataProvider(root);     	
@@ -49,19 +51,38 @@ public class DemoUI extends UI
         	return FileTypeResolver.getIcon(file);
         });
         
+        tree.setItemDescriptionGenerator(file -> {
+        	String desc = "";
+        	if (!file.isDirectory()) {
+        		Date date = new Date(file.lastModified());
+        		long size = file.length();
+        		String unit = "";
+        		if (size > 1024*1024*1024) {
+        			size = size / (1024*1024*1024);
+        			unit = "GB";
+        		}
+        		else if (size > 1024*1024) {
+        			size = size / (1024*1024);
+        			unit = "MB";
+        		}
+        		else if (size > 1024) {
+        			size = size / (1024);
+        			unit = "KB";
+        		} else {
+        			unit = "B";        			
+        		}        			        		
+        		desc = file.getName()+", "+date+", "+size+ " "+unit;        		
+        	} else {
+        		desc = root.getChildrenFromFilesystem(file).size()+" files";
+        	}
+        	return desc;
+        });
+        
         tree.addItemClickListener(event -> {
         	File file = event.getItem();     
-        	if (tree.isExpanded(file)) {
-        		tree.collapse(file);
-        	} else {
-        		if (file.isDirectory()) {
-        			// Add new items when folders are being clicked first time
-        			if (root.getChildren(file).isEmpty()) root.addItems(file, root.getChildrenFromFilesystem(file));
-        			tree.expand(file);
-        		} else {
-        			Date date = new Date(file.lastModified());
-        			Notification.show(file.getPath()+" "+date+" "+file.length());        		        		
-        		}
+        	if (!file.isDirectory()) {
+        		Date date = new Date(file.lastModified());
+        		Notification.show(file.getPath()+", "+date+", "+file.length());        		
         	}
         });
                 
@@ -88,7 +109,7 @@ public class DemoUI extends UI
         	File file = event.getItem();
         	if (!file.isDirectory()) {
         		Date date = new Date(file.lastModified());
-        		Notification.show(file.getPath()+" "+date+" "+file.length());        		
+        		Notification.show(file.getPath()+", "+date+", "+file.length());        		
         	}
         });
         

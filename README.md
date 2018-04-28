@@ -49,6 +49,9 @@ To debug project and make code modifications on the fly in the server-side, righ
 
 ## Release notes
 
+### Version 0.3.0
+- Made lazy loading automatic in non-recursive mode
+
 ### Version 0.2.0
 - Added JavaDocs
 - Minor fixes and improvements

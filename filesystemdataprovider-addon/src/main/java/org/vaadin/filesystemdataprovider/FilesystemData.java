@@ -92,8 +92,8 @@ public class FilesystemData extends TreeData<File> {
 	}
 	
 	/**
-	 * Get file listing of given folder, this function can be used
-	 * as data provider when adding new children to tree, hence public
+	 * Helper method used internally for fetching files lazily from
+	 * FilesystemDataProvider
 	 * 
 	 * @param item The folder 
 	 * @return List of files in the folder
