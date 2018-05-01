@@ -2,6 +2,7 @@ package org.vaadin.filesystemdataprovider;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -41,7 +42,7 @@ public class FilesystemDataProvider extends TreeDataProvider<File> {
     @Override
     public boolean hasChildren(File item) {
     	if (!isInMemory()) {
-    		return !treeData.getChildrenFromFilesystem(item).isEmpty();
+    		return item.isDirectory() && !treeData.getChildrenFromFilesystem(item).isEmpty();
     	} else {
     		return super.hasChildren(item);
     	}
