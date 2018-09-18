@@ -1,3 +1,6 @@
+[![Published on Vaadin  Directory](https://img.shields.io/badge/Vaadin%20Directory-published-00b4f0.svg)](https://vaadin.com/directory/component/filesystem-dataprovider-add-on)
+[![Stars on Vaadin Directory](https://img.shields.io/vaadin-directory/star/filesystem-dataprovider-add-on.svg)](https://vaadin.com/directory/component/filesystem-dataprovider-add-on)
+
 # MyComponent Add-on for Vaadin 8
 
 FilesystemDataProvider is a data model add-on for Vaadin 8 providing hierarchical
