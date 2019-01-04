@@ -15,7 +15,7 @@ import com.vaadin.data.TreeData;
  * This is the data model class for FilesystemDataProvider, which is just a TreeDataProvider
  * using FilesystemData 
  * 
- * @author TatuL
+ * @author Tatu Lund
  *
  */
 public class FilesystemData extends TreeData<File> {

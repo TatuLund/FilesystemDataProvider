@@ -52,6 +52,10 @@ To debug project and make code modifications on the fly in the server-side, righ
 
 ## Release notes
 
+### Version 1.0.0
+- Added FileSelect: A simple single select component for files
+- Complemented JavaDocs
+
 ### Version 0.3.0
 - Made lazy loading automatic in non-recursive mode
 

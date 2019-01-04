@@ -1,20 +1,20 @@
 package org.vaadin.filesystemdataprovider;
 
 import java.io.File;
-import java.io.FilenameFilter;
-import java.nio.file.Files;
 import java.util.List;
 import java.util.stream.Stream;
 
-import com.vaadin.data.provider.BackEndHierarchicalDataProvider;
-import com.vaadin.data.provider.DataProviderListener;
 import com.vaadin.data.provider.HierarchicalQuery;
 import com.vaadin.data.provider.TreeDataProvider;
 import com.vaadin.server.SerializablePredicate;
-import com.vaadin.shared.Registration;
 
-// This is the server-side UI component that provides public API 
-// for MyComponent
+/**
+ * FileSystemDataProvider is data provider that can map file system to hierarchical
+ * data, so that it can be used e.g. with Tree and TreeGrid
+ * 
+ * @author Tatu Lind
+ *
+ */
 public class FilesystemDataProvider extends TreeDataProvider<File> {
 
     private boolean recursive;
@@ -31,6 +31,13 @@ public class FilesystemDataProvider extends TreeDataProvider<File> {
     	this.treeData = treeData;
     }
 
+    /**
+     * Get the count of children based on query
+     * 
+     * @param query A query
+     * 
+     * @return The count of children
+     */
     @Override
     public int getChildCount(
             HierarchicalQuery<File, SerializablePredicate<File>> query) {    	
@@ -39,6 +46,13 @@ public class FilesystemDataProvider extends TreeDataProvider<File> {
     	else return (int) fetchChildren(query).count();
     }    
     
+    /**
+     * Check if the file has children or not
+     * 
+     * @param item The File 
+     * 
+     * @return True if the File has children (i.e. it is a non empty directory)
+     */
     @Override
     public boolean hasChildren(File item) {
     	if (!isInMemory()) {
@@ -48,6 +62,12 @@ public class FilesystemDataProvider extends TreeDataProvider<File> {
     	}
     }
 
+    /**
+     * Return the files in directory as a Stream based on query
+     *  
+     * @param query A query
+     * @return A stream of Files
+     */
     @Override
     public Stream<File> fetchChildren(
             HierarchicalQuery<File, SerializablePredicate<File>> query) {
@@ -64,6 +84,7 @@ public class FilesystemDataProvider extends TreeDataProvider<File> {
     		return super.fetchChildren(query);
     	}
     }
+    
     /**
      * FilesystemDataProvider is fully in-memory if it is constructed
      * recursively, otherwise it is progressively lazy

@@ -19,7 +19,7 @@ import com.vaadin.server.ThemeResource;
  * Note : The icons are associated purely to mime-types, with fuzzy matching
  * with limited icon set
  * </p>
- *
+ * 
  */
 @SuppressWarnings("serial")
 public class FileTypeResolver implements Serializable {

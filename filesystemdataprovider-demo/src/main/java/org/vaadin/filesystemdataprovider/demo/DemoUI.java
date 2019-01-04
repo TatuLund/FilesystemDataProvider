@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.servlet.annotation.WebServlet;
 
+import org.vaadin.filesystemdataprovider.FileSelect;
 import org.vaadin.filesystemdataprovider.FileTypeResolver;
 import org.vaadin.filesystemdataprovider.FilesystemData;
 import org.vaadin.filesystemdataprovider.FilesystemDataProvider;
@@ -95,7 +96,7 @@ public class DemoUI extends UI
     	
     	// Use path that points somewhere that makes sense
     	// Large directories are slow to construct and consume memory
-    	File rootFile2 = new File("C:/Users/TatuL/Documents");
+    	File rootFile2 = new File("C:/Users/Tatu/Documents");
     	FilesystemData root2 = new FilesystemData(rootFile2);
     	FilesystemDataProvider fileSystem2 = new FilesystemDataProvider(root2);     	
         final Tree<File> tree2 = new Tree<>();
@@ -118,6 +119,24 @@ public class DemoUI extends UI
         layout2.setContent(tree2);
     	tabSheet.addTab(layout2,"Recursive demo");
     	    	
+    	// Demo 3: Use FileSelect
+    	
+    	File rootFile3 = new File("C:/");
+    	FileSelect fileSelect = new FileSelect(rootFile3);
+    	fileSelect.addValueChangeListener(event -> {
+        	File file = fileSelect.getValue();
+    		Date date = new Date(file.lastModified());
+        	if (!file.isDirectory()) {
+        		Notification.show(file.getPath()+", "+date+", "+file.length());        		
+        	} else {
+        		Notification.show(file.getPath()+", "+date);
+        	}
+    	});
+        final Panel layout3 = new Panel();
+        layout3.setSizeFull();        
+        layout3.setContent(fileSelect);
+    	tabSheet.addTab(layout3,"FileSelect demo");
+    	
         setContent(tabSheet);
     }
 }
