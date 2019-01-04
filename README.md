@@ -52,6 +52,9 @@ To debug project and make code modifications on the fly in the server-side, righ
 
 ## Release notes
 
+### Version 1.0.1
+- Fixed FileSelect to work with keyboard selection as well
+
 ### Version 1.0.0
 - Added FileSelect: A simple single select component for files
 - Complemented JavaDocs

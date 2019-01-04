@@ -2,6 +2,7 @@ package org.vaadin.filesystemdataprovider;
 
 import java.io.File;
 import java.util.Date;
+import java.util.Set;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
@@ -63,14 +64,16 @@ public class FileSelect extends CustomField<File> {
         	}
         	return desc;
         });
-        
-        tree.addItemClickListener(event -> {
-        	File file = event.getItem();     
-        	selectedFile = file; 
-        	this.fireEvent(new ValueChangeEvent<File>(this,file,true));
-        });
 
         tree.setSelectionMode(SelectionMode.SINGLE);
+        
+        tree.addSelectionListener(event -> {
+        	selectedFile = null;
+        	event.getFirstSelectedItem().ifPresent(file -> {
+        		selectedFile = file;
+        		fireEvent(new ValueChangeEvent<File>(this,selectedFile,true));	
+        	});
+        });
 
 		return tree;
 	}
