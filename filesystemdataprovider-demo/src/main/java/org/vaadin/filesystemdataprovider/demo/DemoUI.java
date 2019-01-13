@@ -132,10 +132,7 @@ public class DemoUI extends UI
         		Notification.show(file.getPath()+", "+date);
         	}
     	});
-        final Panel layout3 = new Panel();
-        layout3.setSizeFull();        
-        layout3.setContent(fileSelect);
-    	tabSheet.addTab(layout3,"FileSelect demo");
+    	tabSheet.addTab(fileSelect,"FileSelect demo");
     	
         setContent(tabSheet);
     }

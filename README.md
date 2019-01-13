@@ -52,6 +52,9 @@ To debug project and make code modifications on the fly in the server-side, righ
 
 ## Release notes
 
+### Version 1.1.0
+- Added filename extension filter support to FileSelect
+
 ### Version 1.0.1
 - Fixed FileSelect to work with keyboard selection as well
 
